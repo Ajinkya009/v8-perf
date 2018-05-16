@@ -140,8 +140,8 @@ Once crankshaft was taken out of the mix the below pipeline was possible
 - previous V8 implementations suffered from _performance cliffs_
   - optimized code ran super fast (focus on peak performance case)
   - baseline performance was much lower
-  - as a result one feature in your code that caused deoptimization would affect your app's
-    performance dramatically, i.e. 100x difference
+  - as a result one feature in your code that prevented it's optimization would affect your
+    app's performance dramatically, i.e. 100x difference
 - TurboFan improves this as
   - widens fast path to ensure that optimized code is more flexible and can accept more types
     of arguments
@@ -171,6 +171,7 @@ Once crankshaft was taken out of the mix the below pipeline was possible
 
 - no longer relying on optimizing compiler for _sufficiently_ fast code
 - thus improved baseline performance allows delaying optimization until more feedback is collected
+- avoids optimizations of infrequently executed code
 - leads to less time and resources spent optimizing
 
 ### New Language Features
@@ -231,6 +232,8 @@ Once crankshaft was taken out of the mix the below pipeline was possible
   load/store operations (from/to explicit registers)
 - current stack frame is identified by stack pointer
 - program counter points to currently executed instruction in the bytecode
+- each bytecode handler tail-calls into the next bytecode handler (indirectly threaded
+  interpreter)
 
 ## Collecting Feedback via ICs
 
@@ -326,7 +329,7 @@ TurboFan is not just an optimizing compiler:
 - interpreter bytecode handlers run on top of TurboFan
 - builtins benefit from TurboFan
 - code stubs / IC subsystem runs on top of TurboFan
-- web assembly code generation (also runs on top of TurboFan)
+- web assembly code generation (also runs on top of TurboFan by using its back-end passes)
 
 ## Speculative Optimization
 
